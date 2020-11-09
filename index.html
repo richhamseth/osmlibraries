@@ -6,12 +6,75 @@
     <title>OSM</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta http-equiv="x-ua-compatible" content="IE-edge">
+    <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
+        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
+        crossorigin="anonymous"></script>
+        <style>
+            html,
+            body {
+              height: 100%;
+              padding: 0;
+              margin: 0;
+            }
+        
+            #map {
+              /* configure the size of the map */
+              width: 100%;
+              height: 100%;
+            }
+          </style>
 </head>
 
 <body>
-    <p><a href="/openstreetmap/openLayersMarker.html">Basic Location Marker</a></p>
+    <!-- <p><a href="/openstreetmap/openLayersMarker.html">Basic Location Marker</a></p>
     <p><a href="/openstreetmap/multipleMarkersDiffColors.html">Different locations indicated with diff colors</a></p>
-    <p><a href="/openstreetmap/openLayersMarkerDescription.html">Locations with description</a></p>
+    <p><a href="/openstreetmap/openLayersMarkerDescription.html">Locations with description</a></p> -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="#"><img src="http://34.121.189.174/images/emrit_logo.png" width="118px"></a>
+    </nav>
+    <div id="map"></div>
+    <script>
+      // initialize Leaflet 
+      var map = L.map('map').setView({ lon: 77.646843, lat: 13.061296 }, 16);
+  
+      // add the OpenStreetMap tiles
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+      }).addTo(map);
+  
+      // show the scale bar on the lower left corner
+      L.control.scale().addTo(map);
+  
+      // show a marker on the map
+      L.marker({ lon: 77.646843, lat: 13.061296 }).addTo(map).on('click', markerOnClick);
+      
+      function markerOnClick(e) {
+        $('#mymodal').modal('show');
+      }
+    </script>
+    <div id="mymodal" class="modal fade" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header text-center">
+              <h4 class="modal-title">Comorin Consulting Service</h4>
+            </div>
+            <div class="modal-body">
+              <p>Hi</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+            </div>
+          </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+      </div><!-- /.modal -->
 </body>
 
 </html>
