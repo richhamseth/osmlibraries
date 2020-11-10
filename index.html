@@ -29,20 +29,106 @@
             width: 100%;
             height: 100%;
         }
+
+        .modal.custom .modal-dialog {
+            position: fixed;
+            bottom: 0;
+            margin: auto;
+            right: 25%;
+            left: 25%;
+        }
+
+        .bottomBox {
+            background: rgb(37, 37, 37);
+            background: linear-gradient(90deg, rgb(37 37 37 / 25%) 0%, rgb(37 37 37 / 58%) 0%, rgba(88, 88, 99, 1) 47%, rgba(37, 37, 37, 1) 100%);
+
+            padding: 15px;
+            margin: 10px;
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            border-radius: 10px;
+        }
     </style>
 </head>
 
 <body>
-    <!-- <p><a href="/openstreetmap/openLayersMarker.html">Basic Location Marker</a></p>
-    <p><a href="/openstreetmap/multipleMarkersDiffColors.html">Different locations indicated with diff colors</a></p>
-    <p><a href="/openstreetmap/openLayersMarkerDescription.html">Locations with description</a></p> -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#"><img src="http://34.121.189.174/images/emrit_logo.png" width="118px"></a>
     </nav>
     <div id="map"></div>
+    <!-- Modal Dialog Start -->
+    <div id="mymodal" class="modal fade custom" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header text-center">
+                    <h4 class="modal-title"> Hotspot details: <span id="demo"></span>
+                    </h4>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Accout ID: </strong><br><span
+                            style="word-wrap: break-word">143ZDp7mCcgurqGZW4ppK7P87XC2Jw1NEZwVuN3UTGfTmxX9zWL</span></p>
+                    <p><strong>Total HNT: </strong>1,378.32</p>
+                    <p><strong>Name: </strong>shiny-velvet-yak</p>
+                    <p><strong>Location: </strong> Tucson, AZ, United States</p>
+                    <p><strong>Score: </strong>0.01</p>
+                    <p><strong>Activity Log: </strong><br> with transactions identified by hashes like:
+                        VAG15EvEwsulxZNBNnBSpdMJlofouQZozaa9zRmuOtY, block height, data_credits, poc_challengers,
+                        poc_witnesses, poc_challengees, and consensus</p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal Dialog End -->
+    <div class="bottomBox">
+        <div class="col-lg-12 text-center">
+            <img src="./assets/markerLogo.png" width="43px">
+        </div>
+        <div class="col-lg-12 text-center pt-2">
+            <h4 class="mb-0" style="color: white;" id="hotspots"></h4>
+        </div>
+    </div>
     <script>
+        var greenIcon = L.icon({
+            iconUrl: './assets/markerLogo.png',
+            shadowUrl: './assets/markerLogo.png',
+            iconSize: [25, 25], // size of the icon
+            shadowSize: [25, 25], // size of the shadow
+            iconAnchor: [22, 94], // point of the icon which will correspond to marker's location
+            shadowAnchor: [4, 62],  // the same for the shadow
+            popupAnchor: [-3, -76] // point from which the popup should open relative to the iconAnchor
+        });
+        var locations = [
+            ["Kothanur", 13.0552, 77.6422, "coolspots"],
+            ["Hebbal", 13.1362, 78.1291, "coolspots"],
+            ["Mysore", 12.2958, 76.6394, "coolspots"],
+            ["Davangere ", 14.4644, 75.9218, "helium"],
+            ["Dharmavaram ", 14.4125, 77.7201, "helium"],
+            ["Chikmagalur ", 13.3161, 75.7720, "coolspots"],
+            ["Cuttack", 20.4625, 85.8830, "coolspots"],
+            ["Puri", 19.8135, 85.8312, "coolspots"],
+            ["berhampur", 19.3150, 84.7941, "helium"],
+            ["phulbin", 20.4797, 84.2331, "coolspots"],
+            ["telegana", 18.1124, 79.0193, "helium"],
+            ["jaipur", 26.9124, 75.7873, "coolspots"],
+            ["Udgir", 18.3943, 77.1126, "helium"],
+            ["Rajasthan", 27.0238, 74.2179, "helium"],
+            ["Tonk", 26.1659, 75.7963, "coolspots"],
+            ["Bhanjanagar", 19.9358, 84.5825, "coolspots"],
+            ["New Delhi", 28.6139, 77.2090, "helium"],
+            ["Beawar", 26.1046, 74.3199, "coolspots"],
+            ["Sikar", 27.6094, 75.1398, "coolspots"],
+            ["Agra", 27.1767, 78.0081, "helium"]
+        ];
         // initialize Leaflet 
-        var map = L.map('map').setView({ lon: 77.646843, lat: 13.061296 }, 16);
+        var map = L.map('map').setView({ lon: 79.0882, lat: 21.1458 }, 5);
 
         // add the OpenStreetMap tiles
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -50,31 +136,34 @@
             attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
         }).addTo(map);
 
-        // show the scale bar on the lower left corner
+        // show a marker on the map
         L.control.scale().addTo(map);
 
+        var hotspotcount = 1;
         // show a marker on the map
-        L.marker({ lon: 77.646843, lat: 13.061296 }).addTo(map).on('click', markerOnClick);
+        for (var i = 0; i < locations.length; i++) {
+            if (locations[i][3] == "helium") {
+                marker = new L.circleMarker([locations[i][1], locations[i][2]], { color: 'red' })
+                    .bindPopup(locations[i][0])
+                    .addTo(map).setRadius(4);
+            } else {
 
+                document.getElementById("hotspots").innerHTML = hotspotcount++
+                marker = new L.Marker([locations[i][1], locations[i][2]], { icon: greenIcon })
+                    .addTo(map);
+                marker.myID = i;
+                marker.on('click', markerOnClick);
+            }
+        }
+
+
+        // L.marker({ lon: 77.646843, lat: 13.061296 }).addTo(map).on('click', markerOnClick);
         function markerOnClick(e) {
+            console.log('asfasfasf', hotspotcount)
+            document.getElementById("demo").innerHTML = locations[e.target.myID][0];
             $('#mymodal').modal('show');
         }
     </script>
-    <div id="mymodal" class="modal fade" tabindex="-1" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header text-center">
-                    <h4 class="modal-title">Comorin Consulting Service</h4>
-                </div>
-                <div class="modal-body">
-                    <p>Hi</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
-                </div>
-            </div><!-- /.modal-content -->
-        </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
 </body>
 
 </html>
