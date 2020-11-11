@@ -62,8 +62,39 @@
     <div id="mymodal" class="modal fade custom" tabindex="-1" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
+                <div class="modal-header text-center" style="
+                background: #454a50;
+                color: #22d690;
+            ">
+                    <h4 class="modal-title"> Coolspot details: <span id="demo"></span>
+                    </h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p><strong>Accout ID: </strong><br><span
+                            style="word-wrap: break-word">143ZDp7mCcgurqGZW4ppK7P87XC2Jw1NEZwVuN3UTGfTmxX9zWL</span></p>
+                    <p><strong>Total HNT: </strong>1,378.32</p>
+                    <p><strong>Name: </strong>shiny-velvet-yak</p>
+                    <p><strong>Location: </strong> Tucson, AZ, United States</p>
+                    <p><strong>Score: </strong>0.01</p>
+                    <p><strong>Activity Log: </strong><br> with transactions identified by hashes like:
+                        VAG15EvEwsulxZNBNnBSpdMJlofouQZozaa9zRmuOtY, block height, data_credits, poc_challengers,
+                        poc_witnesses, poc_challengees, and consensus</p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                    <p></p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="mymodal2" class="modal fade custom" tabindex="-1" role="dialog">
+        <div class="modal-dialog">
+            <div class="modal-content">
                 <div class="modal-header text-center">
-                    <h4 class="modal-title"> Hotspot details: <span id="demo"></span>
+                    <h4 class="modal-title"> Hotspot details: <span id="demo2"></span>
                     </h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -99,17 +130,17 @@
     <script>
         var greenIcon = L.icon({
             iconUrl: 'https://emrit.comorin.co/openstreetmap/assets/markerLogo.png',
-            shadowUrl: 'https://emrit.comorin.co/openstreetmap/assets/markerLogo.png',
-            iconSize: [15, 15], // size of the icon
-            shadowSize: [15, 15], // size of the shadow
+            // shadowUrl: 'https://emrit.comorin.co/openstreetmap/assets/markerLogo.png',
+            iconSize: [18, 18], // size of the icon
+            // shadowSize: [17, 17], // size of the shadow
             iconAnchor: [22, 94], // point of the icon which will correspond to marker's location
-            shadowAnchor: [4, 62],  // the same for the shadow
+            // shadowAnchor: [4, 62],  // the same for the shadow
             popupAnchor: [-3, -76] // point from which the popup should open relative to the iconAnchor
         });
         var locations = [
             ["Kothanur", 13.0552, 77.6422, "coolspots"],
             ["Hebbal", 13.1362, 78.1291, "coolspots"],
-            ["Mysore", 12.2958, 76.6394, "coolspots"],
+            ["Mysore", 12.2958, 76.6394, "wifi"],
             ["Davangere ", 14.4644, 75.9218, "helium"],
             ["Dharmavaram ", 14.4125, 77.7201, "helium"],
             ["Chikmagalur ", 13.3161, 75.7720, "coolspots"],
@@ -118,14 +149,14 @@
             ["berhampur", 19.3150, 84.7941, "helium"],
             ["phulbin", 20.4797, 84.2331, "coolspots"],
             ["telegana", 18.1124, 79.0193, "helium"],
-            ["jaipur", 26.9124, 75.7873, "coolspots"],
+            ["jaipur", 26.9124, 75.7873, "wifi"],
             ["Udgir", 18.3943, 77.1126, "helium"],
             ["Rajasthan", 27.0238, 74.2179, "helium"],
             ["Tonk", 26.1659, 75.7963, "coolspots"],
             ["Bhanjanagar", 19.9358, 84.5825, "coolspots"],
             ["New Delhi", 28.6139, 77.2090, "helium"],
             ["Beawar", 26.1046, 74.3199, "coolspots"],
-            ["Sikar", 27.6094, 75.1398, "coolspots"],
+            ["Sikar", 27.6094, 75.1398, "wifi"],
             ["Agra", 27.1767, 78.0081, "helium"]
         ];
         // initialize Leaflet 
@@ -143,14 +174,20 @@
         var hotspotcount = 1;
         // show a marker on the map
         for (var i = 0; i < locations.length; i++) {
-            if (locations[i][3] == "helium") {
+            if (locations[i][3] == "wifi") {
                 marker = new L.circleMarker([locations[i][1], locations[i][2]], { color: 'red' })
                     .bindPopup(locations[i][0])
                     .addTo(map).setRadius(4);
-            } else {
-
+            } else if (locations[i][3] == "helium") {
+                marker = new L.circleMarker([locations[i][1], locations[i][2]], { color: 'green' })
+                    // .bindPopup(locations[i][0])
+                    .addTo(map).setRadius(4);
+                marker.myID = i;
+                marker.on('click', markerOnClick2);
+            } else{
                 document.getElementById("hotspots").innerHTML = hotspotcount++
                 marker = new L.Marker([locations[i][1], locations[i][2]], { icon: greenIcon })
+                // marker = new L.circleMarker([locations[i][1], locations[i][2]], { color: 'green' })
                     .addTo(map);
                 marker.myID = i;
                 marker.on('click', markerOnClick);
@@ -163,6 +200,10 @@
             console.log('asfasfasf', hotspotcount)
             document.getElementById("demo").innerHTML = locations[e.target.myID][0];
             $('#mymodal').modal('show');
+        }
+        function markerOnClick2(e) {
+            document.getElementById("demo2").innerHTML = locations[e.target.myID][0];
+            $('#mymodal2').modal('show');
         }
     </script>
 </body>
