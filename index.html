@@ -65,6 +65,9 @@
                 <div class="modal-header text-center">
                     <h4 class="modal-title"> Hotspot details: <span id="demo"></span>
                     </h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
                     <p><strong>Accout ID: </strong><br><span
@@ -80,9 +83,6 @@
                     <p></p>
                     <p></p>
                     <p></p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
                 </div>
             </div>
         </div>
@@ -100,8 +100,8 @@
         var greenIcon = L.icon({
             iconUrl: 'https://emrit.comorin.co/openstreetmap/assets/markerLogo.png',
             shadowUrl: 'https://emrit.comorin.co/openstreetmap/assets/markerLogo.png',
-            iconSize: [25, 25], // size of the icon
-            shadowSize: [25, 25], // size of the shadow
+            iconSize: [15, 15], // size of the icon
+            shadowSize: [15, 15], // size of the shadow
             iconAnchor: [22, 94], // point of the icon which will correspond to marker's location
             shadowAnchor: [4, 62],  // the same for the shadow
             popupAnchor: [-3, -76] // point from which the popup should open relative to the iconAnchor
