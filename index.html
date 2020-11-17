@@ -1,34 +1,35 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <base href="/openstreetmap">
-    <title>Emrit OSM</title>
-    <link rel="icon" href="https://emrit.comorin.co/openstreetmap/assets/markerLogo.png">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta http-equiv="x-ua-compatible" content="IE-edge">
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="https://d19vzq90twjlae.cloudfront.net/leaflet-0.7/leaflet.css" />
+    <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css"
-        integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
-        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx"
-        crossorigin="anonymous"></script>
-    <style>
-        html,
+    <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
+    <!--this is new-->
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script
+        src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+
+    <style type="text/css">
         body {
-            height: 100%;
-            padding: 0;
-            margin: 0;
+            font-family: 'Roboto', sans-serif;
         }
 
         #map {
-            /* configure the size of the map */
             width: 100%;
-            height: 100%;
+            height: 100vh;
+        }
+
+        button {
+            width: 100px;
         }
 
         .modal.custom .modal-dialog {
@@ -39,6 +40,66 @@
             left: 25%;
         }
 
+        .Input-text {
+            line-height: 35px;
+            background: #fafafa;
+            -webkit-box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, .08);
+            -moz-box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, .08);
+            box-shadow: inset 0 1px 3px 0 rgba(0, 0, 0, .08);
+            -webkit-border-radius: 5px;
+            -moz-border-radius: 5px;
+            border-radius: 5px;
+            padding: 0 20px;
+            font-size: 16px;
+            color: #666;
+            -webkit-transition: all .4s ease;
+            -o-transition: all .4s ease;
+            -moz-transition: all .4s ease;
+            transition: all .4s ease;
+            width: 100%;
+        }
+
+        .height-100 {
+            height: 504px;
+            overflow: auto;
+        }
+
+        .cordinates {
+            border-bottom: 1px solid #e6e6e6;
+            padding: .5rem !important;
+            cursor: pointer;
+        }
+
+        .cordinates:hover {
+            cursor: pointer;
+            background-color: #f5f5f5;
+        }
+
+        .hotspotHeader {
+            background: #454a50;
+            color: #22d690;
+        }
+
+        /* width */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        /* Track */
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+            background: #888;
+        }
+
+        /* Handle on hover */
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
+
         .bottomBox {
             background: rgb(37, 37, 37);
             background: linear-gradient(90deg, rgb(37 37 37 / 25%) 0%, rgb(37 37 37 / 58%) 0%, rgba(88, 88, 99, 1) 47%, rgba(37, 37, 37, 1) 100%);
@@ -47,7 +108,7 @@
             border-radius: 10px;
         }
 
-        .bottomdiv{
+        .bottomdiv {
             position: fixed;
             bottom: 0;
             z-index: 1050;
@@ -57,197 +118,534 @@
     </style>
 </head>
 
-<body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+<body onload="myFunction()">
+    <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <a class="navbar-brand" href="#"><img src="https://emrit.comorin.co/images/emrit_logo.png" width="118px"></a>
-    </nav>
-    <div id="map"></div>
-    <!-- Modal Dialog Start -->
-    <div id="mymodal" class="modal fade custom" tabindex="-1" role="dialog">
+    </nav> -->
+    <div class="col-lg-12">
+        <div class="row">
+            <div class="col-sm-3 p-0">
+                <div style="height: 100vh;">
+                    <div class="p-2"><img src="https://emrit.comorin.co/images/emrit_logo.png" width="118px"></div>
+                    <div class="p-2"> <input type="text" id="input" class="Input-text" placeholder="Search"></div>
+                    <div class="btn-group p-2 mb-2 w-100">
+                        <button type="button" id="allbus" class="btn btn-success">All</button>
+                        <button type="button" id="cafes" class="btn"
+                            style="color: white !important; background:linear-gradient(90deg, rgb(37 37 37 / 25%) 0%, rgb(37 37 37 / 58%) 0%, rgba(88, 88, 99, 1) 47%, rgba(37, 37, 37, 1) 100%)">Coolspots</button>
+                        <button type="button" id="others" class="btn btn-danger">Hotspots</button>
+                    </div>
+                    <div class="height-100" id="hotspotd"></div>
+                </div>
+            </div>
+            <div class="col-sm-9 p-0">
+                <div id="map"></div>
+            </div>
+        </div>
+    </div>
+    <!-- Coolspot Modal Start -->
+    <div id="spotModal" class="modal fade custom" tabindex="-1" role="dialog">
         <div class="modal-dialog">
             <div class="modal-content">
-                <div class="modal-header text-center" style="
-                background: #454a50;
-                color: #22d690;
-            ">
-                    <h4 class="modal-title">Coolspot details: <span id="demo"></span>
-                    </h4>
+                <div class="modal-header text-center hotspotHeader" id="hotspotModalHeader">
+                    <h4 class="modal-title"><span id="header1"></span></h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-header text-center" id="coolspotModalHeader">
+                    <h4 class="modal-title"><span id="header2"></span></h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p><strong>Accout ID: </strong><br><span
-                            style="word-wrap: break-word">143ZDp7mCcgurqGZW4ppK7P87XC2Jw1NEZwVuN3UTGfTmxX9zWL</span></p>
-                    <p><strong>Total HNT: </strong>1,378.32</p>
-                    <p><strong>Name: </strong>shiny-velvet-yak</p>
-                    <p><strong>Location: </strong> Tucson, AZ, United States</p>
-                    <p><strong>Score: </strong>0.01</p>
-                    <p><strong>Activity Log: </strong><br> with transactions identified by hashes like:
-                        VAG15EvEwsulxZNBNnBSpdMJlofouQZozaa9zRmuOtY, block height, data_credits, poc_challengers,
-                        poc_witnesses, poc_challengees, and consensus</p>
-                    <p></p>
-                    <p></p>
-                    <p></p>
-                    <p></p>
+                    <p><strong>Hotspot Wallet: </strong><span style="word-wrap: break-word" id="hotspotWallet"></span>
+                    </p>
+                    <p><strong>Owner Wallet: </strong><span style="word-wrap: break-word" id="ownerWallet"></span></p>
+                    <p><strong>Score: </strong><span id="hotspotScore"></span></p>
+                    <p><strong>Location: </strong><br><span id="address"></span><br><span id="city"></span>, <span
+                            id="region"></span><br><span id="country"></span> - <span id="zip"></span></p>
                 </div>
             </div>
         </div>
     </div>
-    <div id="mymodal2" class="modal fade custom" tabindex="-1" role="dialog">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header text-center">
-                    <h4 class="modal-title">Hotspot details: <span id="demo2"></span>
-                    </h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <p><strong>Accout ID: </strong><br><span
-                            style="word-wrap: break-word">143ZDp7mCcgurqGZW4ppK7P87XC2Jw1NEZwVuN3UTGfTmxX9zWL</span></p>
-                    <p><strong>Total HNT: </strong>1,378.32</p>
-                    <p><strong>Name: </strong>shiny-velvet-yak</p>
-                    <p><strong>Location: </strong> Tucson, AZ, United States</p>
-                    <p><strong>Score: </strong>0.01</p>
-                    <p><strong>Activity Log: </strong><br> with transactions identified by hashes like:
-                        VAG15EvEwsulxZNBNnBSpdMJlofouQZozaa9zRmuOtY, block height, data_credits, poc_challengers,
-                        poc_witnesses, poc_challengees, and consensus</p>
-                    <p></p>
-                    <p></p>
-                    <p></p>
-                    <p></p>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- Modal Dialog End -->
+    <!-- Coolspot Modal End -->
     <div class="bottomdiv">
-    <div class="checkdata" style="background-color: white; padding: 10px; margin: 10px;border-radius: 10px;">
-        <input type="checkbox" id="vehicle1" name="vehicle1" value="Bike" onchange="stickyheaddsadaer(this)">
-        <label for="vehicle1"> Display Range</label><br>
-    </div>
-    <div class="bottomBox">
-        <div class="col-lg-12 text-center">
-            <img src="https://emrit.comorin.co/openstreetmap/assets/markerLogo.png" width="43px">
+        <div id="cityData" class="checkdata text-center"
+            style="background-color: white; padding: 10px; margin: 10px;border-radius: 10px;">
+            <label><strong><span id="cityName"></span></strong></label><br>
+            <label id="cityPopulation"></label>
         </div>
-        <div class="col-lg-12 text-center pt-2">
-            <h4 class="mb-0" style="color: white;" id="hotspots"></h4>
+        <div class="bottomBox">
+            <div class="col-lg-12 text-center">
+                <img src="https://emrit.comorin.co/openstreetmap/assets/markerLogo.png" width="43px">
+            </div>
+            <div class="col-lg-12 text-center pt-2">
+                <h4 class="mb-0" style="color: white;" id="hotspots"></h4>
+            </div>
         </div>
     </div>
-    </div>
-    <script>
+
+    <script type="text/javascript">
+
+        var mapboxTiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+        });
+
+        //possible colors 'red', 'darkred', 'orange', 'green', 'darkgreen', 'blue', 'purple', 'darkpuple', 'cadetblue'
+        var cafeIcon = L.AwesomeMarkers.icon({
+            prefix: 'fa', //font awesome rather than bootstrap
+            markerColor: 'red', // see colors above
+            icon: 'wifi' //http://fortawesome.github.io/Font-Awesome/icons/
+        });
         var greenIcon = L.icon({
             iconUrl: 'https://emrit.comorin.co/openstreetmap/assets/markerLogo.png',
-            // shadowUrl: 'https://emrit.comorin.co/openstreetmap/assets/markerLogo.png',
-            iconSize: [17, 17], // size of the icon
-            // shadowSize: [17, 17], // size of the shadow
-            iconAnchor: [17, 17], // point of the icon which will correspond to marker's location
-            // shadowAnchor: [4, 62],  // the same for the shadow
+            iconSize: [20, 20], // size of the icon
+            iconAnchor: [20, 20], // point of the icon which will correspond to marker's location
             popupAnchor: [-3, -76] // point from which the popup should open relative to the iconAnchor
         });
-        var locations = [
-            ["Kothanur", 13.0552, 77.6422, "coolspots"],
-            ["Hebbal", 13.1362, 78.1291, "coolspots"],
-            ["Mysore", 12.2958, 76.6394, "wifi"],
-            ["Davangere ", 14.4644, 75.9218, "helium"],
-            ["Dharmavaram ", 14.4125, 77.7201, "helium"],
-            ["Chikmagalur ", 13.3161, 75.7720, "coolspots"],
-            ["Cuttack", 20.4625, 85.8830, "coolspots"],
-            ["Puri", 19.8135, 85.8312, "coolspots"],
-            ["berhampur", 19.3150, 84.7941, "helium"],
-            ["phulbin", 20.4797, 84.2331, "coolspots"],
-            ["telegana", 18.1124, 79.0193, "helium"],
-            ["jaipur", 26.9124, 75.7873, "wifi"],
-            ["Udgir", 18.3943, 77.1126, "helium"],
-            ["Rajasthan", 27.0238, 74.2179, "helium"],
-            ["Tonk", 26.1659, 75.7963, "coolspots"],
-            ["Bhanjanagar", 19.9358, 84.5825, "coolspots"],
-            ["New Delhi", 28.6139, 77.2090, "helium"],
-            ["Beawar", 26.1046, 74.3199, "coolspots"],
-            ["Sikar", 27.6094, 75.1398, "wifi"],
-            ["Agra", 27.1767, 78.0081, "helium"]
-        ];
-        // initialize Leaflet 
-        var map = L.map('map').setView({ lon: "79.0882", lat: "21.1458" }, 5);
 
-        // add the OpenStreetMap tiles
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+        //add zoom control with your options
+        var map = L.map('map', { zoomControl: false })
+            .addLayer(mapboxTiles)
+            .setView([42.444508, -76.499491], 12);
+        L.control.zoom({
+            position: 'topright'
         }).addTo(map);
 
-        // show a marker on the map
-        L.control.scale().addTo(map);
+        var promise = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "1",
+                        "Name": "Able Mandarin Hornet",
+                        "BusType": "Coolspot",
+                        "emrit_owned": "true",
+                        "population": 486290,
+                        "address": "667 N Highland Ave NE",
+                        "city": "Atlanta",
+                        "state_region": "GA",
+                        "country_short": "US",
+                        "country": "United States of America",
+                        "zip": "30306",
+                        "score": "0.2500000000000",
+                        "status": "online",
+                        "hotspot_wallet": "112iWP5YSEZxfV6wyHXhdAKTLuZXQm2ehym1FRLVqowiFoXnDEd6",
+                        "owner_wallet": "13YuCz3mZ55HZ6hJJvQHCZXGgE8ooe2CSvbtSHQR3m5vZ1EVCNZ",
+                        "Description": "Gimme espresso bars are found in New York City and Upstate New York."
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                            -84.3524924869,
+                            33.7728978434
+                        ]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "2",
+                        "Name": "Abundant Coral Dragon",
+                        "BusType": "Coolspot",
+                        "emrit_owned": "true",
+                        "score": "0.6832885742188",
+                        "population": 486290,
+                        "address": "1922 Gregory Run NE",
+                        "city": "Atlanta",
+                        "state_region": "GA",
+                        "country_short": "US",
+                        "country": "United States of America",
+                        "zip": "30345-2306",
+                        "status": "online",
+                        "hotspot_wallet": "112LmQuYNwcGHNXB6orwcjPDmbv88MCWSj1MGwfBEqu3F8BpQDry",
+                        "owner_wallet": "13YuCz3mZ55HZ6hJJvQHCZXGgE8ooe2CSvbtSHQR3m5vZ1EVCNZ",
+                        "Description": "Specializes in spatial and environmental data analysis and statistics, geographic information systems and custom data design."
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                            -84.3100896042,
+                            33.8546577628
+                        ]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "3",
+                        "Name": "Abundant Garnet Millipede",
+                        "BusType": "Coolspot",
+                        "emrit_owned": "true",
+                        "status": "online",
+                        "address": "395 16th St NW",
+                        "city": "Atlanta",
+                        "state_region": "GA",
+                        "country_short": "US",
+                        "country": "United States of America",
+                        "zip": "30363-1011",
+                        "population": 486290,
+                        "score": "0.8898162841797",
+                        "hotspot_wallet": "1121X3K1sBSeFVmYkPgzfUzNPE7wgLmrdg2AMG84PsNGdktV1be1",
+                        "owner_wallet": "14DN6yWS2YLaXQauJMHZCXMBv4hCTRcoHBVmaNmX93LyTxqvWS2",
+                        "Description": "Inn and cocktail bar in a beautifully restored historic mansion."
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                            -84.3999266888,
+                            33.7893365452
+                        ]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "4",
+                        "Name": "Abundant Mint Cormorant",
+                        "BusType": "Coolspot",
+                        "emrit_owned": "true",
+                        "population": 486290,
+                        "address": "1329 Doublegate Dr NE",
+                        "city": "Atlanta",
+                        "state_region": "GA",
+                        "country_short": "US",
+                        "country": "United States of America",
+                        "zip": "30319",
+                        "score": "0.0161743164063",
+                        "hotspot_wallet": "11pUz71Jb8UAsY7sXkd2UNEaFCj4w4cgAdrEeqJf4cFRYBzVT5r",
+                        "owner_wallet": "13YuCz3mZ55HZ6hJJvQHCZXGgE8ooe2CSvbtSHQR3m5vZ1EVCNZ",
+                        "status": "online",
+                        "Description": "Gimme espresso bars are found in New York City and Upstate New York."
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                            -84.3327256636,
+                            33.8459886273
+                        ]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "5",
+                        "Name": "Great Cherry Poodle",
+                        "BusType": "Coolspot",
+                        "emrit_owned": "true",
+                        "population": 22961,
+                        "score": null,
+                        "status": "online",
+                        "address": "3054 Hess Dr",
+                        "city": "Highland",
+                        "state_region": "IN",
+                        "country_short": "US",
+                        "country": "United States of America",
+                        "zip": "46322-2131",
+                        "hotspot_wallet": "114VWEMDtgD6qFqA3iS71xpGfLN1Dd1uZXjPpjMH5xX3cX8arYe",
+                        "owner_wallet": "14jPnW8vEKR4uDC7TPTmBZ2Y2CqdD4mANZPMvXfrNHPPDeieDy3",
+                        "Description": "Specializes in spatial and environmental data analysis and statistics, geographic information systems and custom data design."
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                            -87.4542947301,
+                            41.5512533050
+                        ]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "6",
+                        "Name": "Flat Hazel Snail",
+                        "BusType": "Coolspot",
+                        "emrit_owned": "true",
+                        "population": 621342,
+                        "score": null,
+                        "status": "online",
+                        "address": "564 S Belnord Ave",
+                        "city": "Baltimore",
+                        "state_region": "MD",
+                        "country_short": "US",
+                        "country": "United States of America",
+                        "zip": "21224-3801",
+                        "hotspot_wallet": "11CjhLTAQWHUjZvmQke49ZYr8k6nge2rHmL1TSLzsmfHjpXV64C",
+                        "owner_wallet": "13JyFksMcfyMTpycMy1XStssPWcQJut61n68sMUhG1cJQBmwUWi",
+                        "Description": "Inn and cocktail bar in a beautifully restored historic mansion."
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                            -76.5779330330,
+                            39.2855469550
+                        ]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "7",
+                        "Name": "Clean Nylon Okapi",
+                        "BusType": "Coolspot",
+                        "emrit_owned": "true",
+                        "status": "offline",
+                        "population": 790390,
+                        "score": null,
+                        "address": "1132 S Lamar Blvd",
+                        "city": "Austin",
+                        "state_region": "TX",
+                        "country_short": "US",
+                        "country": "United States of America",
+                        "zip": "78704-2300",
+                        "hotspot_wallet": "11aS1fM9HHVHzRgjVtcP55559X8pMnkCUdSttfZUohqH84sNQpM",
+                        "owner_wallet": "13jL4pTLq4JQBwDoH1ZBX3VPchmeTZxQSGi4cnyXXuzPPoKxcd5",
+                        "Description": "Gimme espresso bars are found in New York City and Upstate New York."
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                            -97.7623357837,
+                            30.2555763563
+                        ]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "8",
+                        "Name": "Wobbly Red Fish",
+                        "BusType": "Coolspot",
+                        "emrit_owned": "true",
+                        "status": "offline",
+                        "population": 2532645,
+                        "score": null,
+                        "address": "729 MacDonough St",
+                        "city": "Brooklyn",
+                        "state_region": "NY",
+                        "country_short": "US",
+                        "country": "United States of America",
+                        "zip": "11233-1609",
+                        "hotspot_wallet": "11267NoGnJi3KvJL1KnDDFhHiPvtmGcx1bhgi4ecwVMJsJgFBa54",
+                        "owner_wallet": "13pvRETyRgnyYWcVTBwwmRjCmVMwpvca3264ZLFkwRmHJGq5t62",
+                        "Description": "Specializes in spatial and environmental data analysis and statistics, geographic information systems and custom data design."
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                            -73.9171223327,
+                            40.6842367887
+                        ]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "9",
+                        "Name": "Acrobatic Walnut Camel",
+                        "BusType": "hotspots",
+                        "emrit_owned": "false",
+                        "population": 211266,
+                        "address": "449 Claribel Rd",
+                        "city": "Modesto",
+                        "state_region": "CA",
+                        "country_short": "US",
+                        "country": "United States of America",
+                        "zip": "95356-9613",
+                        "score": null,
+                        "status": "online",
+                        "hotspot_wallet": "11UnH7Bh5X3Pus6KzbzUPKFd2vHR52BE2FSRMDguYJjZMRaUDMR",
+                        "owner_wallet": "14UGKeuJCq6hnuoFxW8Q9548XtDC8r6rXvjtnjnEn2kgEpvhkyt",
+                        "Description": "Inn and cocktail bar in a beautifully restored historic mansion."
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                            -120.9896202720,
+                            37.7131655904
+                        ]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "10",
+                        "Name": "Young Tangelo Seagull",
+                        "BusType": "hotspots",
+                        "emrit_owned": "false",
+                        "population": 631486,
+                        "score": null,
+                        "address": "853 Homer St",
+                        "city": "Vancouver",
+                        "state_region": "BC",
+                        "country_short": "CA",
+                        "country": "Canada",
+                        "zip": "V6B 6M3",
+                        "status": "online",
+                        "hotspot_wallet": "11f1B9tdcWa215wT7SCrefYbbRQSAFb4i4S34Lr2roiNG1K4WzH",
+                        "owner_wallet": "13cxvd8mFDbyQVpLN2Dmk7r8cCRprbywUaw5XQ1e6uRviuTweVg",
+                        "Description": "Inn and cocktail bar in a beautifully restored historic mansion."
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                            -123.1176586922,
+                            49.2793656213
+                        ]
+                    }
+                },
+                {
+                    "type": "Feature",
+                    "properties": {
+                        "id": "11",
+                        "Name": "Able Laurel Giraff",
+                        "BusType": "Coolspot",
+                        "emrit_owned": "true",
+                        "status": "online",
+                        "population": 486290,
+                        "score": "0.2500000000000",
+                        "address": "Tower Place Dr NE",
+                        "city": "Atlanta",
+                        "state_region": "GA",
+                        "country_short": "US",
+                        "country": "United States of America",
+                        "zip": "30326",
+                        "hotspot_wallet": "11yANjmS1tvXTEACK48jTup9aerGVFsEn3hCHkrjYdh6tFLXPsL",
+                        "owner_wallet": "13YuCz3mZ55HZ6hJJvQHCZXGgE8ooe2CSvbtSHQR3m5vZ1EVCNZ",
+                        "Description": "Gimme espresso bars are found in New York City and Upstate New York."
+                    },
+                    "geometry": {
+                        "type": "Point",
+                        "coordinates": [
+                            -84.3720086817,
+                            33.8464083808
+                        ]
+                    }
+                },
+            ]
+        }
+        function myFunction(e) {
 
-        var hotspotcount = 1;
-        // show a marker on the map
-        for (var i = 0; i < locations.length; i++) {
-            if (locations[i][3] == "wifi") {
-                marker = new L.circleMarker([locations[i][1], locations[i][2]], { color: 'red' })
-                    .bindPopup(locations[i][0])
-                    .addTo(map).setRadius(4);
-            } else if (locations[i][3] == "helium") {
-                marker = new L.circleMarker([locations[i][1], locations[i][2]], { color: 'green' })
-                    // .bindPopup(locations[i][0])
-                    .addTo(map).setRadius(4);
-                marker.myID = i;
-                marker.on('click', markerOnClick2);
-            } else{
-                document.getElementById("hotspots").innerHTML = hotspotcount++
-            // L.circle([locations[i][1],locations[i][2]], {radius: 100000}).addTo(map);
-                marker = new L.Marker([locations[i][1], locations[i][2]], { icon: greenIcon })
-                // marker = new L.circleMarker([locations[i][1], locations[i][2]], { color: 'green' })
-                    .addTo(map);
-                marker.myID = i;
-                marker.on('click', markerOnClick);
+            $("#cityData").hide();
+            this.showDisplay(promise, 'all')
+            var allbusinesses = L.geoJson(promise);
+            var cafes = L.geoJson(promise, {
+                filter: function (feature, layer) {
+                    return feature.properties.BusType == "Coolspot";
+                },
+                pointToLayer: function (feature, latlng) {
+                    return L.marker(latlng, {
+                        icon: greenIcon
+                    }).on('mouseover', function () {
+                        this.bindPopup(feature.properties.Name).openPopup();
+                        this.on('click', coolspotModal);
+                        this.myID = feature.properties.id;
+                    });
+                }
+            });
+            var others = L.geoJson(promise, {
+                filter: function (feature, layer) {
+                    return feature.properties.BusType != "Coolspot";
+                },
+                pointToLayer: function (feature, latlng) {
+                    return L.marker(latlng, {
+                        icon: cafeIcon
+                    }).on('mouseover', function () {
+                        this.bindPopup(feature.properties.Name).openPopup();
+                        this.on('click', coolspotModal);
+                        this.myID = feature.properties.id;
+                    });
+                }
+            });
+            var hotspotcount = 1;
+            for (var i = 0; i < promise.features.length; i++) {
+                if (promise.features[i].properties.BusType == "Coolspot") {
+                    document.getElementById("hotspots").innerHTML = hotspotcount++
+                }
+            }
+            map.fitBounds(allbusinesses.getBounds(), {
+                padding: [50, 50]
+            });
+            cafes.addTo(map)
+            others.addTo(map)
+            // The JavaScript below is new
+            $("#others").click(function () {
+                showDisplay(promise, 'hotspots')
+                map.addLayer(others)
+                map.removeLayer(cafes)
+            });
+            $("#cafes").click(function () {
+                showDisplay(promise, 'Coolspot')
+                map.addLayer(cafes)
+                map.removeLayer(others)
+            });
+            $("#allbus").click(function () {
+                showDisplay(promise, 'all')
+                map.addLayer(cafes)
+                map.addLayer(others)
+            });
+        };
+
+        function showDisplay(promise, type) {
+            var htmlElements = "";
+            var spots = []
+            for (var i = 0; i < promise.features.length; i++) {
+                if (type != 'all') {
+                    if (promise.features[i].properties.BusType == type) {
+                        htmlElements += '<div onclick="GFG_Fun(' + promise.features[i].properties.id + ')" class="cordinates"><label><span><strong>Name:</strong> ' + promise.features[i].properties.Name + '</span></label><label><span><strong>Address:</strong> Abundant Coral Dragon</span></label><label><span><strong>Status:</strong> ' + promise.features[i].properties.status + '</span></label></div>';
+                    }
+                } else {
+                    htmlElements += '<div onclick="GFG_Fun(' + promise.features[i].properties.id + ')" class="cordinates"><label><span><strong>Name:</strong> ' + promise.features[i].properties.Name + '</span></label><label><span><strong>Address:</strong> Abundant Coral Dragon</span></label><label><span><strong>Status:</strong> ' + promise.features[i].properties.status + '</span></label></div>';
+                }
+            }
+            var container = document.getElementById("hotspotd");
+            container.innerHTML = htmlElements;
+        }
+
+        function GFG_Fun(parameter) {
+            var circlemarker = new L.circle();
+            var zoom = 14;
+            map.removeLayer(circlemarker);
+            for (var i = 0; i < promise.features.length; i++) {
+                if (promise.features[i].properties['id'] == parameter) {
+                    map.setView([promise.features[i].geometry.coordinates[1], promise.features[i].geometry.coordinates[0]], zoom);
+                    circlemarker = new L.circle([promise.features[i].geometry.coordinates[1], promise.features[i].geometry.coordinates[0]], { radius: 2000, weight: 0, color: '#e49c9c' }).addTo(map);
+                    map.addLayer(circlemarker)
+                    $("#cityData").show();
+                    document.getElementById("cityName").innerHTML = promise.features[i].properties['city'];
+                    document.getElementById("cityPopulation").innerHTML = promise.features[i].properties['population'].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");;
+                }
             }
         }
 
-
-        // L.marker({ lon: 77.646843, lat: 13.061296 }).addTo(map).on('click', markerOnClick);
-        function markerOnClick(e) {
-            console.log('asfasfasf', hotspotcount)
-            document.getElementById("demo").innerHTML = locations[e.target.myID][0];
-            // L.circle([locations[e.target.myID][1],locations[e.target.myID][2]], {radius: 1000}).addTo(map);
-            $('#mymodal').modal('show');
-        }
-        function markerOnClick2(e) {
-            document.getElementById("demo2").innerHTML = locations[e.target.myID][0];
-            $('#mymodal2').modal('show');
-        }
-
-        function stickyheaddsadaer(obj) {
-  if($(obj).is(":checked")){
-    // alert("Yes checked"); //when checked
-    $("#page-header-inner").addClass("sticky");
-    for (var i = 0; i < locations.length; i++) {
-            if (locations[i][3] == "wifi") {
-                marker = new L.circleMarker([locations[i][1], locations[i][2]], { color: 'red' })
-                    .bindPopup(locations[i][0])
-                    .addTo(map).setRadius(4);
-            } else if (locations[i][3] == "helium") {
-                marker = new L.circleMarker([locations[i][1], locations[i][2]], { color: 'green' })
-                    // .bindPopup(locations[i][0])
-                    .addTo(map).setRadius(4);
-                marker.myID = i;
-                marker.on('click', markerOnClick2);
-            } else{
-                // document.getElementById("hotspots").innerHTML = hotspotcount++
-            L.circle([locations[i][1],locations[i][2]], {radius: 80000, weight:0, color: '#e49c9c'}).addTo(map);
-                marker = new L.Marker([locations[i][1], locations[i][2]], { icon: greenIcon })
-                // marker = new L.circleMarker([locations[i][1], locations[i][2]], { color: 'green' })
-                    .addTo(map);
-                marker.myID = i;
-                marker.on('click', markerOnClick);
+        // Function For Modals
+        function coolspotModal(e) {
+            for (var i = 0; i < promise.features.length; i++) {
+                if (promise.features[i].properties['id'] == e.target.myID) {
+                    console.log('asfasfasf', promise.features[i].properties['Name'])
+                    document.getElementById("hotspotWallet").innerHTML = promise.features[i].properties['hotspot_wallet'];
+                    document.getElementById("ownerWallet").innerHTML = promise.features[i].properties['owner_wallet'];
+                    document.getElementById("hotspotScore").innerHTML = promise.features[i].properties['score'];
+                    document.getElementById("address").innerHTML = promise.features[i].properties['address'];
+                    document.getElementById("city").innerHTML = promise.features[i].properties['city'];
+                    document.getElementById("region").innerHTML = promise.features[i].properties['state_region'];
+                    document.getElementById("country").innerHTML = promise.features[i].properties['country_short'];
+                    document.getElementById("zip").innerHTML = promise.features[i].properties['zip'];
+                    if (promise.features[i].properties['emrit_owned'] == "true") {
+                        document.getElementById("header1").innerHTML = promise.features[i].properties['Name'];
+                        $("#hotspotModalHeader").show();
+                        $("#coolspotModalHeader").hide();
+                    } else {
+                        document.getElementById("header2").innerHTML = promise.features[i].properties['Name'];
+                        $("#hotspotModalHeader").hide();
+                        $("#coolspotModalHeader").show();
+                    }
+                    $('#spotModal').modal('show');
+                }
             }
         }
-  }else{
-    // alert("Not checked"); //when not checked
-  }
-  
-}
     </script>
 </body>
 
