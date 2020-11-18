@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <base href="/mapexplorer">
+    <base href="/geoMap">
     <title>Emrit OSM</title>
     <link rel="stylesheet" href="https://d19vzq90twjlae.cloudfront.net/leaflet-0.7/leaflet.css" />
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet">
@@ -27,6 +27,137 @@
             font-family: 'Roboto', sans-serif;
         }
 
+        /* Styling the wrapper, sidebar and content - Start */
+
+        .wrapper {
+            display: block;
+        }
+
+        .sidebar {
+            width: 320px;
+            height: 100vh;
+            position: fixed;
+            top: 0;
+            left: -330px;
+            z-index: 999;
+            background: #fff;
+            transition: all .3s;
+            box-shadow: 3px 3px 3px rgba(51, 51, 51, 0.5);
+            text-align: left;
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        .content {
+            width: 100%;
+            transition: all 0.3s;
+        }
+
+        /* Styling the wrapper, sidebar and content - End */
+
+        /* “Open” button’s - Start */
+
+        .open-menu {
+            position: fixed;
+            top: 20px;
+            left: 10px;
+            z-index: 997;
+            box-shadow: 3px 3px 3px rgba(51, 51, 51, 0.2);
+        }
+
+        .open-menu.btn-customized,
+        .open-menu.btn-customized:hover,
+        .open-menu.btn-customized:active,
+        .open-menu.btn-customized:focus,
+        .open-menu.btn-customized:active:focus,
+        .open-menu.btn-customized.active:focus,
+        .open-menu.btn-customized.btn.btn-primary:not(:disabled):not(.disabled):active,
+        .open-menu.btn-customized.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
+            box-shadow: 3px 3px 3px rgba(51, 51, 51, 0.2);
+        }
+
+        /* Style for all buttons with the class btn-customized */
+
+        a.btn-customized {
+            margin-left: 5px;
+            margin-right: 5px;
+            padding: .75rem 1.5rem;
+            /* background: linear-gradient(90deg, rgb(37 37 37 / 25%) 0%, rgb(0 0 0 / 58%) 0%, rgb(135 135 150) 47%, rgb(74 71 71) 100%); */
+            background: #828288;
+            border: 0;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 300;
+            color: #fff;
+            box-shadow: none;
+        }
+
+        a.btn-customized:hover,
+        a.btn-customized:active,
+        a.btn-customized:focus,
+        a.btn-customized:active:focus,
+        a.btn-customized.active:focus,
+        a.btn-customized.btn.btn-primary:not(:disabled):not(.disabled):active,
+        a.btn-customized.btn.btn-primary:not(:disabled):not(.disabled):active:focus {
+            outline: 0;
+            background: #cd533d;
+            /* background: linear-gradient(90deg, rgb(0 0 0 / 25%) 0%, rgb(37 37 37) 0%, rgb(123 123 134) 47%, rgb(206 186 186) 100%); */
+            background: #ccc;
+            border: 0;
+            color: #fff;
+            box-shadow: none;
+        }
+
+        /* “Open” button’s - End */
+
+        /* “Close” button’s - Start */
+
+        .dismiss {
+            width: 35px;
+            height: 35px;
+            position: absolute;
+            top: 20px;
+            right: 10px;
+            transition: all .3s;
+            background: #ddd;
+            color: #888;
+            border-radius: 4px;
+            text-align: center;
+            line-height: 35px;
+            cursor: pointer;
+        }
+
+        .dismiss:hover,
+        .dismiss:focus {
+            background: #ccc;
+            color: #888;
+        }
+
+        /* label {
+            margin-bottom: 0px;
+        } */
+
+        /* “Close” button’s - End */
+
+        .sidebar .logo {
+            padding: 0px;
+            transition: all .3s;
+        }
+
+        .sidebar .logo div {
+            display: inline-block;
+            width: 172px;
+            height: 71px;
+            background: url(https://emrit.comorin.co/images/emrit_logo.png);
+            background-repeat: no-repeat;
+            background-size: 165px 61px;
+            border: 0;
+            text-indent: -999999px;
+            ;
+        }
+
         #map {
             width: 100%;
             height: 100vh;
@@ -36,13 +167,13 @@
             width: 100px;
         }
 
-        .modal.custom .modal-dialog {
+        /* .modal.custom .modal-dialog {
             position: fixed;
             bottom: 0;
             margin: auto;
             right: 25%;
             left: 25%;
-        }
+        } */
 
         .Input-text {
             line-height: 35px;
@@ -64,7 +195,7 @@
         }
 
         .height-100 {
-            height: 504px;
+            height: 75vh;
             overflow: auto;
         }
 
@@ -99,6 +230,9 @@
             background: #888;
         }
 
+label {
+    margin-bottom: 0px;
+}
         /* Handle on hover */
         ::-webkit-scrollbar-thumb:hover {
             background: #555;
@@ -132,6 +266,10 @@
             font-size: 13px;
         }
 
+        .f12 {
+            font-size: 12px;
+        }
+
         .f18 {
             font-size: 18px;
         }
@@ -155,20 +293,32 @@
         .leaflet-popup {
             bottom: auto !important;
         }
+
+
+        .sidebar .dark-light-buttons {
+            padding: 10px 20px 30px 20px;
+            text-align: center;
+        }
     </style>
 </head>
 
 <body onload="myFunction()">
-    <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#"><img src="https://emrit.comorin.co/images/emrit_logo.png" width="118px"></a>
-    </nav> -->
     <div class="col-lg-12">
         <div class="row">
-            <div class="col-sm-3 p-0">
-                <div style="height: 100vh;">
-                    <div class="p-2"><img src="https://emrit.comorin.co/images/emrit_logo.png" width="118px"></div>
+            <!-- Wrapper -->
+            <div class="wrapper">
+
+                <!-- Sidebar -->
+                <nav class="sidebar pt-2">
+                    <!-- close sidebar menu -->
+                    <div class="dismiss">
+                        <i class="fas fa-arrow-left"></i>
+                    </div>
+                    <div class="logo">
+                        <div href="index.html">Bootstrap 4 Template with Sidebar Menu</div>
+                    </div>
+                    <!-- <div class="p-2"><img src="https://emrit.comorin.co/images/emrit_logo.png" width="118px"></div> -->
                     <div class="p-2">
-                        <!-- Another variation with a button -->
                         <div class="input-group">
                             <input type="text" class="form-control" placeholder="Search">
                             <div class="input-group-append" style="width: 52px;">
@@ -179,16 +329,41 @@
                             </div>
                         </div>
                     </div>
-                    <div class="btn-group p-2 mb-2 w-100">
+                    <!-- <div class="btn-group p-2 mb-2 w-100">
                         <button type="button" id="allbus" class="btn btn-success f13">All</button>
                         <button type="button" id="cafes" class="btn btn-secondary f13"
                             style="color: white !important;">Coolspots</button>
                         <button type="button" id="others" class="btn btn-danger f13">Hotspots</button>
-                    </div>
+                    </div> -->
                     <div class="height-100" id="hotspotd"></div>
+
+                </nav>
+                <!-- End sidebar -->
+
+                <!-- Dark overlay -->
+                <!-- <div class="overlay"></div> -->
+
+                <!-- Content -->
+                <div class="content">
+
+                    <!-- open sidebar menu -->
+                    <a class="btn btn-primary btn-customized open-menu" href="#" role="button">
+                        <span><img src="https://emrit.comorin.co/images/emrit_logo.png" width="100px"></span><i
+                            class="pl-3 fas fa-align-left"></i>
+                    </a>
+
+                    <!-- ... -->
+
+                    <!-- here is the page's content (not shown here) -->
+
+                    <!-- ... -->
+
                 </div>
+                <!-- End content -->
+
             </div>
-            <div class="col-sm-9 p-0">
+            <!-- End wrapper -->
+            <div class="col-sm-12 p-0">
                 <div id="map"></div>
             </div>
         </div>
@@ -238,11 +413,32 @@
     </div>
 
     <script type="text/javascript">
+        jQuery(document).ready(function () {
 
+            $('.dismiss').on('click', function () {
+                $('.sidebar').removeClass('active');
+                //  $('.overlay').removeClass('active');
+            });
+
+            $('.open-menu').on('click', function (e) {
+                e.preventDefault();
+                $('.sidebar').addClass('active');
+                //  $('.overlay').addClass('active');
+                // close opened sub-menus
+                $('.collapse.show').toggleClass('show');
+                $('a[aria-expanded=true]').attr('aria-expanded', 'false');
+            });
+
+            /* other code */
+
+        });
+        var circlemarker;
         var mapboxTiles = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://openstreetmap.org/copyright">OpenStreetMap contributors</a>'
         });
-
+        //     var mapboxTiles = L.tileLayer('http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png', {
+        //     attribution: '<a href="http://www.mapbox.com/about/maps/" target="_blank">Terms &amp; Feedback</a>'
+        // });
         //possible colors 'red', 'darkred', 'orange', 'green', 'darkgreen', 'blue', 'purple', 'darkpuple', 'cadetblue'
         // var cafeIcon = L.AwesomeMarkers.icon({
         //     prefix: 'fa', //font awesome rather than bootstrap
@@ -276,321 +472,343 @@
             position: 'topright'
         }).addTo(map);
 
-        var promise = {
-            "type": "FeatureCollection",
-            "features": [
-                {
-                    "type": "Feature",
-                    "properties": {
-                        "id": "1",
-                        "Name": "Able Mandarin Hornet",
-                        "BusType": "Coolspot",
-                        "emrit_owned": "true",
-                        "population": 486290,
-                        "address": "667 N Highland Ave NE",
-                        "city": "Atlanta",
-                        "state_region": "GA",
-                        "country_short": "US",
-                        "country": "United States of America",
-                        "zip": "30306",
-                        "score": "0.2500000000000",
-                        "status": "online",
-                        "hotspot_wallet": "112iWP5YSEZxfV6wyHXhdAKTLuZXQm2ehym1FRLVqowiFoXnDEd6",
-                        "owner_wallet": "13YuCz3mZ55HZ6hJJvQHCZXGgE8ooe2CSvbtSHQR3m5vZ1EVCNZ",
-                        "Description": "Gimme espresso bars are found in New York City and Upstate New York."
-                    },
-                    "geometry": {
-                        "type": "Point",
-                        "coordinates": [
-                            -84.3524924869,
-                            33.7728978434
-                        ]
-                    }
-                },
-                {
-                    "type": "Feature",
-                    "properties": {
-                        "id": "2",
-                        "Name": "Abundant Coral Dragon",
-                        "BusType": "Coolspot",
-                        "emrit_owned": "true",
-                        "score": "0.6832885742188",
-                        "population": 486290,
-                        "address": "1922 Gregory Run NE",
-                        "city": "Atlanta",
-                        "state_region": "GA",
-                        "country_short": "US",
-                        "country": "United States of America",
-                        "zip": "30345-2306",
-                        "status": "online",
-                        "hotspot_wallet": "112LmQuYNwcGHNXB6orwcjPDmbv88MCWSj1MGwfBEqu3F8BpQDry",
-                        "owner_wallet": "13YuCz3mZ55HZ6hJJvQHCZXGgE8ooe2CSvbtSHQR3m5vZ1EVCNZ",
-                        "Description": "Specializes in spatial and environmental data analysis and statistics, geographic information systems and custom data design."
-                    },
-                    "geometry": {
-                        "type": "Point",
-                        "coordinates": [
-                            -84.3100896042,
-                            33.8546577628
-                        ]
-                    }
-                },
-                {
-                    "type": "Feature",
-                    "properties": {
-                        "id": "3",
-                        "Name": "Abundant Garnet Millipede",
-                        "BusType": "Coolspot",
-                        "emrit_owned": "true",
-                        "status": "online",
-                        "address": "395 16th St NW",
-                        "city": "Atlanta",
-                        "state_region": "GA",
-                        "country_short": "US",
-                        "country": "United States of America",
-                        "zip": "30363-1011",
-                        "population": 486290,
-                        "score": "0.8898162841797",
-                        "hotspot_wallet": "1121X3K1sBSeFVmYkPgzfUzNPE7wgLmrdg2AMG84PsNGdktV1be1",
-                        "owner_wallet": "14DN6yWS2YLaXQauJMHZCXMBv4hCTRcoHBVmaNmX93LyTxqvWS2",
-                        "Description": "Inn and cocktail bar in a beautifully restored historic mansion."
-                    },
-                    "geometry": {
-                        "type": "Point",
-                        "coordinates": [
-                            -84.3999266888,
-                            33.7893365452
-                        ]
-                    }
-                },
-                {
-                    "type": "Feature",
-                    "properties": {
-                        "id": "4",
-                        "Name": "Abundant Mint Cormorant",
-                        "BusType": "Coolspot",
-                        "emrit_owned": "true",
-                        "population": 486290,
-                        "address": "1329 Doublegate Dr NE",
-                        "city": "Atlanta",
-                        "state_region": "GA",
-                        "country_short": "US",
-                        "country": "United States of America",
-                        "zip": "30319",
-                        "score": "0.0161743164063",
-                        "hotspot_wallet": "11pUz71Jb8UAsY7sXkd2UNEaFCj4w4cgAdrEeqJf4cFRYBzVT5r",
-                        "owner_wallet": "13YuCz3mZ55HZ6hJJvQHCZXGgE8ooe2CSvbtSHQR3m5vZ1EVCNZ",
-                        "status": "online",
-                        "Description": "Gimme espresso bars are found in New York City and Upstate New York."
-                    },
-                    "geometry": {
-                        "type": "Point",
-                        "coordinates": [
-                            -84.3327256636,
-                            33.8459886273
-                        ]
-                    }
-                },
-                {
-                    "type": "Feature",
-                    "properties": {
-                        "id": "5",
-                        "Name": "Great Cherry Poodle",
-                        "BusType": "Coolspot",
-                        "emrit_owned": "true",
-                        "population": 22961,
-                        "score": null,
-                        "status": "online",
-                        "address": "3054 Hess Dr",
-                        "city": "Highland",
-                        "state_region": "IN",
-                        "country_short": "US",
-                        "country": "United States of America",
-                        "zip": "46322-2131",
-                        "hotspot_wallet": "114VWEMDtgD6qFqA3iS71xpGfLN1Dd1uZXjPpjMH5xX3cX8arYe",
-                        "owner_wallet": "14jPnW8vEKR4uDC7TPTmBZ2Y2CqdD4mANZPMvXfrNHPPDeieDy3",
-                        "Description": "Specializes in spatial and environmental data analysis and statistics, geographic information systems and custom data design."
-                    },
-                    "geometry": {
-                        "type": "Point",
-                        "coordinates": [
-                            -87.4542947301,
-                            41.5512533050
-                        ]
-                    }
-                },
-                {
-                    "type": "Feature",
-                    "properties": {
-                        "id": "6",
-                        "Name": "Flat Hazel Snail",
-                        "BusType": "Coolspot",
-                        "emrit_owned": "true",
-                        "population": 621342,
-                        "score": null,
-                        "status": "online",
-                        "address": "564 S Belnord Ave",
-                        "city": "Baltimore",
-                        "state_region": "MD",
-                        "country_short": "US",
-                        "country": "United States of America",
-                        "zip": "21224-3801",
-                        "hotspot_wallet": "11CjhLTAQWHUjZvmQke49ZYr8k6nge2rHmL1TSLzsmfHjpXV64C",
-                        "owner_wallet": "13JyFksMcfyMTpycMy1XStssPWcQJut61n68sMUhG1cJQBmwUWi",
-                        "Description": "Inn and cocktail bar in a beautifully restored historic mansion."
-                    },
-                    "geometry": {
-                        "type": "Point",
-                        "coordinates": [
-                            -76.5779330330,
-                            39.2855469550
-                        ]
-                    }
-                },
-                {
-                    "type": "Feature",
-                    "properties": {
-                        "id": "7",
-                        "Name": "Clean Nylon Okapi",
-                        "BusType": "Coolspot",
-                        "emrit_owned": "true",
-                        "status": "offline",
-                        "population": 790390,
-                        "score": null,
-                        "address": "1132 S Lamar Blvd",
-                        "city": "Austin",
-                        "state_region": "TX",
-                        "country_short": "US",
-                        "country": "United States of America",
-                        "zip": "78704-2300",
-                        "hotspot_wallet": "11aS1fM9HHVHzRgjVtcP55559X8pMnkCUdSttfZUohqH84sNQpM",
-                        "owner_wallet": "13jL4pTLq4JQBwDoH1ZBX3VPchmeTZxQSGi4cnyXXuzPPoKxcd5",
-                        "Description": "Gimme espresso bars are found in New York City and Upstate New York."
-                    },
-                    "geometry": {
-                        "type": "Point",
-                        "coordinates": [
-                            -97.7623357837,
-                            30.2555763563
-                        ]
-                    }
-                },
-                {
-                    "type": "Feature",
-                    "properties": {
-                        "id": "8",
-                        "Name": "Wobbly Red Fish",
-                        "BusType": "Coolspot",
-                        "emrit_owned": "true",
-                        "status": "offline",
-                        "population": 2532645,
-                        "score": null,
-                        "address": "729 MacDonough St",
-                        "city": "Brooklyn",
-                        "state_region": "NY",
-                        "country_short": "US",
-                        "country": "United States of America",
-                        "zip": "11233-1609",
-                        "hotspot_wallet": "11267NoGnJi3KvJL1KnDDFhHiPvtmGcx1bhgi4ecwVMJsJgFBa54",
-                        "owner_wallet": "13pvRETyRgnyYWcVTBwwmRjCmVMwpvca3264ZLFkwRmHJGq5t62",
-                        "Description": "Specializes in spatial and environmental data analysis and statistics, geographic information systems and custom data design."
-                    },
-                    "geometry": {
-                        "type": "Point",
-                        "coordinates": [
-                            -73.9171223327,
-                            40.6842367887
-                        ]
-                    }
-                },
-                {
-                    "type": "Feature",
-                    "properties": {
-                        "id": "9",
-                        "Name": "Acrobatic Walnut Camel",
-                        "BusType": "Hotspot",
-                        "emrit_owned": "false",
-                        "population": 211266,
-                        "address": "449 Claribel Rd",
-                        "city": "Modesto",
-                        "state_region": "CA",
-                        "country_short": "US",
-                        "country": "United States of America",
-                        "zip": "95356-9613",
-                        "score": null,
-                        "status": "online",
-                        "hotspot_wallet": "11UnH7Bh5X3Pus6KzbzUPKFd2vHR52BE2FSRMDguYJjZMRaUDMR",
-                        "owner_wallet": "14UGKeuJCq6hnuoFxW8Q9548XtDC8r6rXvjtnjnEn2kgEpvhkyt",
-                        "Description": "Inn and cocktail bar in a beautifully restored historic mansion."
-                    },
-                    "geometry": {
-                        "type": "Point",
-                        "coordinates": [
-                            -120.9896202720,
-                            37.7131655904
-                        ]
-                    }
-                },
-                {
-                    "type": "Feature",
-                    "properties": {
-                        "id": "10",
-                        "Name": "Young Tangelo Seagull",
-                        "BusType": "Hotspot",
-                        "emrit_owned": "false",
-                        "population": 631486,
-                        "score": null,
-                        "address": "853 Homer St",
-                        "city": "Vancouver",
-                        "state_region": "BC",
-                        "country_short": "CA",
-                        "country": "Canada",
-                        "zip": "V6B 6M3",
-                        "status": "online",
-                        "hotspot_wallet": "11f1B9tdcWa215wT7SCrefYbbRQSAFb4i4S34Lr2roiNG1K4WzH",
-                        "owner_wallet": "13cxvd8mFDbyQVpLN2Dmk7r8cCRprbywUaw5XQ1e6uRviuTweVg",
-                        "Description": "Inn and cocktail bar in a beautifully restored historic mansion."
-                    },
-                    "geometry": {
-                        "type": "Point",
-                        "coordinates": [
-                            -123.1176586922,
-                            49.2793656213
-                        ]
-                    }
-                },
-                {
-                    "type": "Feature",
-                    "properties": {
-                        "id": "11",
-                        "Name": "Able Laurel Giraff",
-                        "BusType": "Coolspot",
-                        "emrit_owned": "true",
-                        "status": "online",
-                        "population": 486290,
-                        "score": "0.2500000000000",
-                        "address": "Tower Place Dr NE",
-                        "city": "Atlanta",
-                        "state_region": "GA",
-                        "country_short": "US",
-                        "country": "United States of America",
-                        "zip": "30326",
-                        "hotspot_wallet": "11yANjmS1tvXTEACK48jTup9aerGVFsEn3hCHkrjYdh6tFLXPsL",
-                        "owner_wallet": "13YuCz3mZ55HZ6hJJvQHCZXGgE8ooe2CSvbtSHQR3m5vZ1EVCNZ",
-                        "Description": "Gimme espresso bars are found in New York City and Upstate New York."
-                    },
-                    "geometry": {
-                        "type": "Point",
-                        "coordinates": [
-                            -84.3720086817,
-                            33.8464083808
-                        ]
-                    }
-                },
-            ]
-        }
-        function myFunction(e) {
+        // POST call for HotSpot details
+// $.ajax({
+//     url: 'getFeatureData.php',
+//     type: 'POST',
+//     data: {
+//         filterKey: key, // Add your filter tag –Country, Name, City ETC
+//         filterValue: value // Supply its value
+//     },
+//     success: function(data) {
+//         var promise = data; // Your data is stored in data variable as a JSON object, retrieve by index/loop         
+//     },
+// });
 
+// GET call for HotSpot details
+$.ajax({
+    url: '/getFeatureData.php',
+    type: 'GET',
+    success: function(data) {
+        var promise = data; // Your data is stored in data variable as a JSON object, retrieve by index/loop         
+    },
+});
+
+        // var promise = {
+        //     "type": "FeatureCollection",
+        //     "features": [
+        //         {
+        //             "type": "Feature",
+        //             "properties": {
+        //                 "id": "1",
+        //                 "Name": "Able Mandarin Hornet",
+        //                 "BusType": "Coolspot",
+        //                 "emrit_owned": "true",
+        //                 "population": 486290,
+        //                 "address": "667 N Highland Ave NE",
+        //                 "city": "Atlanta",
+        //                 "state_region": "GA",
+        //                 "country_short": "US",
+        //                 "country": "United States of America",
+        //                 "zip": "30306",
+        //                 "score": "0.2500000000000",
+        //                 "status": "online",
+        //                 "hotspot_wallet": "112iWP5YSEZxfV6wyHXhdAKTLuZXQm2ehym1FRLVqowiFoXnDEd6",
+        //                 "owner_wallet": "13YuCz3mZ55HZ6hJJvQHCZXGgE8ooe2CSvbtSHQR3m5vZ1EVCNZ",
+        //                 "Description": "Gimme espresso bars are found in New York City and Upstate New York."
+        //             },
+        //             "geometry": {
+        //                 "type": "Point",
+        //                 "coordinates": [
+        //                     -84.3524924869,
+        //                     33.7728978434
+        //                 ]
+        //             }
+        //         },
+        //         {
+        //             "type": "Feature",
+        //             "properties": {
+        //                 "id": "2",
+        //                 "Name": "Abundant Coral Dragon",
+        //                 "BusType": "Coolspot",
+        //                 "emrit_owned": "true",
+        //                 "score": "0.6832885742188",
+        //                 "population": 486290,
+        //                 "address": "1922 Gregory Run NE",
+        //                 "city": "Atlanta",
+        //                 "state_region": "GA",
+        //                 "country_short": "US",
+        //                 "country": "United States of America",
+        //                 "zip": "30345-2306",
+        //                 "status": "online",
+        //                 "hotspot_wallet": "112LmQuYNwcGHNXB6orwcjPDmbv88MCWSj1MGwfBEqu3F8BpQDry",
+        //                 "owner_wallet": "13YuCz3mZ55HZ6hJJvQHCZXGgE8ooe2CSvbtSHQR3m5vZ1EVCNZ",
+        //                 "Description": "Specializes in spatial and environmental data analysis and statistics, geographic information systems and custom data design."
+        //             },
+        //             "geometry": {
+        //                 "type": "Point",
+        //                 "coordinates": [
+        //                     -84.3100896042,
+        //                     33.8546577628
+        //                 ]
+        //             }
+        //         },
+        //         {
+        //             "type": "Feature",
+        //             "properties": {
+        //                 "id": "3",
+        //                 "Name": "Abundant Garnet Millipede",
+        //                 "BusType": "Coolspot",
+        //                 "emrit_owned": "true",
+        //                 "status": "online",
+        //                 "address": "395 16th St NW",
+        //                 "city": "Atlanta",
+        //                 "state_region": "GA",
+        //                 "country_short": "US",
+        //                 "country": "United States of America",
+        //                 "zip": "30363-1011",
+        //                 "population": 486290,
+        //                 "score": "0.8898162841797",
+        //                 "hotspot_wallet": "1121X3K1sBSeFVmYkPgzfUzNPE7wgLmrdg2AMG84PsNGdktV1be1",
+        //                 "owner_wallet": "14DN6yWS2YLaXQauJMHZCXMBv4hCTRcoHBVmaNmX93LyTxqvWS2",
+        //                 "Description": "Inn and cocktail bar in a beautifully restored historic mansion."
+        //             },
+        //             "geometry": {
+        //                 "type": "Point",
+        //                 "coordinates": [
+        //                     -84.3999266888,
+        //                     33.7893365452
+        //                 ]
+        //             }
+        //         },
+        //         {
+        //             "type": "Feature",
+        //             "properties": {
+        //                 "id": "4",
+        //                 "Name": "Abundant Mint Cormorant",
+        //                 "BusType": "Coolspot",
+        //                 "emrit_owned": "true",
+        //                 "population": 486290,
+        //                 "address": "1329 Doublegate Dr NE",
+        //                 "city": "Atlanta",
+        //                 "state_region": "GA",
+        //                 "country_short": "US",
+        //                 "country": "United States of America",
+        //                 "zip": "30319",
+        //                 "score": "0.0161743164063",
+        //                 "hotspot_wallet": "11pUz71Jb8UAsY7sXkd2UNEaFCj4w4cgAdrEeqJf4cFRYBzVT5r",
+        //                 "owner_wallet": "13YuCz3mZ55HZ6hJJvQHCZXGgE8ooe2CSvbtSHQR3m5vZ1EVCNZ",
+        //                 "status": "online",
+        //                 "Description": "Gimme espresso bars are found in New York City and Upstate New York."
+        //             },
+        //             "geometry": {
+        //                 "type": "Point",
+        //                 "coordinates": [
+        //                     -84.3327256636,
+        //                     33.8459886273
+        //                 ]
+        //             }
+        //         },
+        //         {
+        //             "type": "Feature",
+        //             "properties": {
+        //                 "id": "5",
+        //                 "Name": "Great Cherry Poodle",
+        //                 "BusType": "Coolspot",
+        //                 "emrit_owned": "true",
+        //                 "population": 22961,
+        //                 "score": null,
+        //                 "status": "online",
+        //                 "address": "3054 Hess Dr",
+        //                 "city": "Highland",
+        //                 "state_region": "IN",
+        //                 "country_short": "US",
+        //                 "country": "United States of America",
+        //                 "zip": "46322-2131",
+        //                 "hotspot_wallet": "114VWEMDtgD6qFqA3iS71xpGfLN1Dd1uZXjPpjMH5xX3cX8arYe",
+        //                 "owner_wallet": "14jPnW8vEKR4uDC7TPTmBZ2Y2CqdD4mANZPMvXfrNHPPDeieDy3",
+        //                 "Description": "Specializes in spatial and environmental data analysis and statistics, geographic information systems and custom data design."
+        //             },
+        //             "geometry": {
+        //                 "type": "Point",
+        //                 "coordinates": [
+        //                     -87.4542947301,
+        //                     41.5512533050
+        //                 ]
+        //             }
+        //         },
+        //         {
+        //             "type": "Feature",
+        //             "properties": {
+        //                 "id": "6",
+        //                 "Name": "Flat Hazel Snail",
+        //                 "BusType": "Coolspot",
+        //                 "emrit_owned": "true",
+        //                 "population": 621342,
+        //                 "score": null,
+        //                 "status": "online",
+        //                 "address": "564 S Belnord Ave",
+        //                 "city": "Baltimore",
+        //                 "state_region": "MD",
+        //                 "country_short": "US",
+        //                 "country": "United States of America",
+        //                 "zip": "21224-3801",
+        //                 "hotspot_wallet": "11CjhLTAQWHUjZvmQke49ZYr8k6nge2rHmL1TSLzsmfHjpXV64C",
+        //                 "owner_wallet": "13JyFksMcfyMTpycMy1XStssPWcQJut61n68sMUhG1cJQBmwUWi",
+        //                 "Description": "Inn and cocktail bar in a beautifully restored historic mansion."
+        //             },
+        //             "geometry": {
+        //                 "type": "Point",
+        //                 "coordinates": [
+        //                     -76.5779330330,
+        //                     39.2855469550
+        //                 ]
+        //             }
+        //         },
+        //         {
+        //             "type": "Feature",
+        //             "properties": {
+        //                 "id": "7",
+        //                 "Name": "Clean Nylon Okapi",
+        //                 "BusType": "Coolspot",
+        //                 "emrit_owned": "true",
+        //                 "status": "offline",
+        //                 "population": 790390,
+        //                 "score": null,
+        //                 "address": "1132 S Lamar Blvd",
+        //                 "city": "Austin",
+        //                 "state_region": "TX",
+        //                 "country_short": "US",
+        //                 "country": "United States of America",
+        //                 "zip": "78704-2300",
+        //                 "hotspot_wallet": "11aS1fM9HHVHzRgjVtcP55559X8pMnkCUdSttfZUohqH84sNQpM",
+        //                 "owner_wallet": "13jL4pTLq4JQBwDoH1ZBX3VPchmeTZxQSGi4cnyXXuzPPoKxcd5",
+        //                 "Description": "Gimme espresso bars are found in New York City and Upstate New York."
+        //             },
+        //             "geometry": {
+        //                 "type": "Point",
+        //                 "coordinates": [
+        //                     -97.7623357837,
+        //                     30.2555763563
+        //                 ]
+        //             }
+        //         },
+        //         {
+        //             "type": "Feature",
+        //             "properties": {
+        //                 "id": "8",
+        //                 "Name": "Wobbly Red Fish",
+        //                 "BusType": "Coolspot",
+        //                 "emrit_owned": "true",
+        //                 "status": "offline",
+        //                 "population": 2532645,
+        //                 "score": null,
+        //                 "address": "729 MacDonough St",
+        //                 "city": "Brooklyn",
+        //                 "state_region": "NY",
+        //                 "country_short": "US",
+        //                 "country": "United States of America",
+        //                 "zip": "11233-1609",
+        //                 "hotspot_wallet": "11267NoGnJi3KvJL1KnDDFhHiPvtmGcx1bhgi4ecwVMJsJgFBa54",
+        //                 "owner_wallet": "13pvRETyRgnyYWcVTBwwmRjCmVMwpvca3264ZLFkwRmHJGq5t62",
+        //                 "Description": "Specializes in spatial and environmental data analysis and statistics, geographic information systems and custom data design."
+        //             },
+        //             "geometry": {
+        //                 "type": "Point",
+        //                 "coordinates": [
+        //                     -73.9171223327,
+        //                     40.6842367887
+        //                 ]
+        //             }
+        //         },
+        //         // {
+        //         //     "type": "Feature",
+        //         //     "properties": {
+        //         //         "id": "9",
+        //         //         "Name": "Acrobatic Walnut Camel",
+        //         //         "BusType": "Hotspot",
+        //         //         "emrit_owned": "false",
+        //         //         "population": 211266,
+        //         //         "address": "449 Claribel Rd",
+        //         //         "city": "Modesto",
+        //         //         "state_region": "CA",
+        //         //         "country_short": "US",
+        //         //         "country": "United States of America",
+        //         //         "zip": "95356-9613",
+        //         //         "score": null,
+        //         //         "status": "online",
+        //         //         "hotspot_wallet": "11UnH7Bh5X3Pus6KzbzUPKFd2vHR52BE2FSRMDguYJjZMRaUDMR",
+        //         //         "owner_wallet": "14UGKeuJCq6hnuoFxW8Q9548XtDC8r6rXvjtnjnEn2kgEpvhkyt",
+        //         //         "Description": "Inn and cocktail bar in a beautifully restored historic mansion."
+        //         //     },
+        //         //     "geometry": {
+        //         //         "type": "Point",
+        //         //         "coordinates": [
+        //         //             -120.9896202720,
+        //         //             37.7131655904
+        //         //         ]
+        //         //     }
+        //         // },
+        //         // {
+        //         //     "type": "Feature",
+        //         //     "properties": {
+        //         //         "id": "10",
+        //         //         "Name": "Young Tangelo Seagull",
+        //         //         "BusType": "Hotspot",
+        //         //         "emrit_owned": "false",
+        //         //         "population": 631486,
+        //         //         "score": null,
+        //         //         "address": "853 Homer St",
+        //         //         "city": "Vancouver",
+        //         //         "state_region": "BC",
+        //         //         "country_short": "CA",
+        //         //         "country": "Canada",
+        //         //         "zip": "V6B 6M3",
+        //         //         "status": "online",
+        //         //         "hotspot_wallet": "11f1B9tdcWa215wT7SCrefYbbRQSAFb4i4S34Lr2roiNG1K4WzH",
+        //         //         "owner_wallet": "13cxvd8mFDbyQVpLN2Dmk7r8cCRprbywUaw5XQ1e6uRviuTweVg",
+        //         //         "Description": "Inn and cocktail bar in a beautifully restored historic mansion."
+        //         //     },
+        //         //     "geometry": {
+        //         //         "type": "Point",
+        //         //         "coordinates": [
+        //         //             -123.1176586922,
+        //         //             49.2793656213
+        //         //         ]
+        //         //     }
+        //         // },
+        //         {
+        //             "type": "Feature",
+        //             "properties": {
+        //                 "id": "11",
+        //                 "Name": "Able Laurel Giraff",
+        //                 "BusType": "Coolspot",
+        //                 "emrit_owned": "true",
+        //                 "status": "online",
+        //                 "population": 486290,
+        //                 "score": "0.2500000000000",
+        //                 "address": "Tower Place Dr NE",
+        //                 "city": "Atlanta",
+        //                 "state_region": "GA",
+        //                 "country_short": "US",
+        //                 "country": "United States of America",
+        //                 "zip": "30326",
+        //                 "hotspot_wallet": "11yANjmS1tvXTEACK48jTup9aerGVFsEn3hCHkrjYdh6tFLXPsL",
+        //                 "owner_wallet": "13YuCz3mZ55HZ6hJJvQHCZXGgE8ooe2CSvbtSHQR3m5vZ1EVCNZ",
+        //                 "Description": "Gimme espresso bars are found in New York City and Upstate New York."
+        //             },
+        //             "geometry": {
+        //                 "type": "Point",
+        //                 "coordinates": [
+        //                     -84.3720086817,
+        //                     33.8464083808
+        //                 ]
+        //             }
+        //         },
+        //     ]
+        // }
+
+        function myFunction(e) {
             $("#cityData").hide();
             this.showDisplay(promise, 'all')
             var allbusinesses = L.geoJson(promise);
@@ -635,22 +853,55 @@
             others.addTo(map)
             // The JavaScript below is new
             $("#others").click(function () {
+                if (circlemarker != undefined) {
+                    map.removeLayer(circlemarker);
+                };
+                $("#cityData").hide();
+                map.setZoom(4);
                 showDisplay(promise, 'Hotspot')
                 map.addLayer(others)
                 map.removeLayer(cafes)
             });
             $("#cafes").click(function () {
+                if (circlemarker != undefined) {
+                    map.removeLayer(circlemarker);
+                };
+                $("#cityData").hide();
+                map.setZoom(4);
                 showDisplay(promise, 'Coolspot')
                 map.addLayer(cafes)
                 map.removeLayer(others)
             });
             $("#allbus").click(function () {
+                if (circlemarker != undefined) {
+                    map.removeLayer(circlemarker);
+                };
+                $("#cityData").hide();
+                map.setZoom(4);
                 showDisplay(promise, 'all')
                 map.addLayer(cafes)
                 map.addLayer(others)
             });
+            var prevZoom = map.getZoom();
+            map.on('zoomend', function (e) {
+                var currZoom = map.getZoom();
+                var diff = prevZoom - currZoom;
+                if (diff > 0) {
+                    if (currZoom < 10) {
+                        if (circlemarker != undefined) {
+                            map.removeLayer(circlemarker);
+                        };
+                        $("#cityData").hide();
+                        showDisplay(promise, 'all')
+                        map.addLayer(cafes)
+                        map.addLayer(others)
+                    }
+                } else if (diff < 0) {
+                } else {
+                }
+                prevZoom = currZoom;
+            });
         };
-
         function showDisplay(promise, type) {
             var htmlElements = "";
             var spots = []
@@ -658,16 +909,16 @@
                 if (type != 'all') {
                     if (promise.features[i].properties.BusType == type) {
                         if (promise.features[i].properties.status == "online") {
-                            htmlElements += '<div onclick="GFG_Fun(' + promise.features[i].properties.id + ')" class="cordinates"><div class="col-lg-12"><label><span class="f14">' + promise.features[i].properties.Name + '</span></label></div><div class="col-lg-12 text-right"><label><span><span class="f13 pr-2" style="color:#70757A;position: relative; top: -4px;">' + promise.features[i].properties.BusType + '</span><span id="onlineIcon' + i + '" class="material-icons green f18"> wifi </span> <span class="green"></span></span></label></div></div>';
+                            htmlElements += '<div onclick="GFG_Fun(' + promise.features[i].properties.id + ')" class="cordinates"><div class="col-lg-12"><label class="mb-0"><span class="f14">' + promise.features[i].properties.Name + '</span></label><label class="float-right mb-0"><span id="onlineIcon' + i + '" class="material-icons green f18"> wifi </span></label></div><div class="col-lg-12"><label><span><span class="f12" style="color:#70757A">' + promise.features[i].properties.address + '</span></span></label></div><div class="col-lg-12"><label><span><span class="f12" style="color:#70757A">' + promise.features[i].properties.city + ' - ' + promise.features[i].properties.zip + '</span></span></label></div></div>';
                         } else {
-                            htmlElements += '<div onclick="GFG_Fun(' + promise.features[i].properties.id + ')" class="cordinates"><div class="col-lg-12"><label><span class="f14">' + promise.features[i].properties.Name + '</span></label></div><div class="col-lg-12 text-right"><label><span><span class="f13 pr-2" style="color:#70757A;position: relative; top: -4px;">' + promise.features[i].properties.BusType + '</span><span id="offlineIcon' + i + '" class="material-icons red f18"> wifi_off </span> <span class="red"></span></span></label></div></div>';
+                            htmlElements += '<div onclick="GFG_Fun(' + promise.features[i].properties.id + ')" class="cordinates"><div class="col-lg-12"><label class="mb-0"><span class="f14">' + promise.features[i].properties.Name + '</span></label><label class="float-right mb-0"><span id="offlineIcon' + i + '" class="material-icons red f18"> wifi_off </span></label></div><div class="col-lg-12"><label><span><span class="f12" style="color:#70757A">' + promise.features[i].properties.address + '</span></span></label></div><div class="col-lg-12"><label><span><span class="f12" style="color:#70757A">' + promise.features[i].properties.city + ' - ' + promise.features[i].properties.zip + '</span></span></label></div></div>';
                         }
                     }
                 } else {
                     if (promise.features[i].properties.status == "online") {
-                        htmlElements += '<div onclick="GFG_Fun(' + promise.features[i].properties.id + ')" class="cordinates"><div class="col-lg-12"><label><span class="f14">' + promise.features[i].properties.Name + '</span></label></div><div class="col-lg-12 text-right"><label><span><span class="f13 pr-2" style="color:#70757A;position: relative; top: -4px;">' + promise.features[i].properties.BusType + '</span><span id="onlineIcon' + i + '" class="material-icons green f18"> wifi </span> <span class="green"></span></span></label></div></div>';
+                        htmlElements += '<div onclick="GFG_Fun(' + promise.features[i].properties.id + ')" class="cordinates"><div class="col-lg-12"><label class="mb-0"><span class="f14">' + promise.features[i].properties.Name + '</span></label><label class="float-right mb-0"><span id="onlineIcon' + i + '" class="material-icons green f18"> wifi </span></label></div><div class="col-lg-12"><label><span><span class="f12" style="color:#70757A">' + promise.features[i].properties.address + '</span></span></label></div><div class="col-lg-12"><label><span><span class="f12" style="color:#70757A">' + promise.features[i].properties.city + ' - ' + promise.features[i].properties.zip + '</span></span></label></div></div>';
                     } else {
-                        htmlElements += '<div onclick="GFG_Fun(' + promise.features[i].properties.id + ')" class="cordinates"><div class="col-lg-12"><label><span class="f14">' + promise.features[i].properties.Name + '</span></label></div><div class="col-lg-12 text-right"><label><span><span class="f13 pr-2" style="color:#70757A;position: relative; top: -4px;">' + promise.features[i].properties.BusType + '</span><span id="offlineIcon' + i + '" class="material-icons red f18"> wifi_off </span> <span class="red"></span></span></label></div></div>';
+                        htmlElements += '<div onclick="GFG_Fun(' + promise.features[i].properties.id + ')" class="cordinates"><div class="col-lg-12"><label class="mb-0"><span class="f14">' + promise.features[i].properties.Name + '</span></label><label class="float-right mb-0"><span id="offlineIcon' + i + '" class="material-icons red f18"> wifi_off </span></label></div><div class="col-lg-12"><label><span><span class="f12" style="color:#70757A">' + promise.features[i].properties.address + '</span></span></label></div><div class="col-lg-12"><label><span><span class="f12" style="color:#70757A">' + promise.features[i].properties.city + ' - ' + promise.features[i].properties.zip + '</span></span></label></div></div>';
                     }
 
                 }
@@ -675,19 +926,18 @@
             var container = document.getElementById("hotspotd");
             container.innerHTML = htmlElements;
         }
-
         function GFG_Fun(parameter) {
-            var circlemarker = new L.circle();
             var zoom = 14;
-            map.removeLayer(circlemarker);
+            if (circlemarker != undefined) {
+                map.removeLayer(circlemarker);
+            };
             for (var i = 0; i < promise.features.length; i++) {
                 if (promise.features[i].properties['id'] == parameter) {
                     map.setView([promise.features[i].geometry.coordinates[1], promise.features[i].geometry.coordinates[0]], zoom);
-                    circlemarker = new L.circle([promise.features[i].geometry.coordinates[1], promise.features[i].geometry.coordinates[0]], { radius: 2000, weight: 0, color: '#e49c9c' }).addTo(map);
-                    map.addLayer(circlemarker)
+                    circlemarker = new L.circle([promise.features[i].geometry.coordinates[1], promise.features[i].geometry.coordinates[0]], { radius: 2000, weight: 0, color: '#25e16b' }).addTo(map);
                     $("#cityData").show();
                     document.getElementById("cityName").innerHTML = promise.features[i].properties['city'];
-                    document.getElementById("cityPopulation").innerHTML = promise.features[i].properties['population'].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");;
+                    document.getElementById("cityPopulation").innerHTML = promise.features[i].properties['population'].toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 }
             }
         }
